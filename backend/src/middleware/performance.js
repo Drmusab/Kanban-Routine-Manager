@@ -68,7 +68,9 @@ const measureTime = async (name, fn) => {
 class QueryPerformanceTracker {
   constructor() {
     this.queries = [];
-    this.enabled = process.env.NODE_ENV === 'development';
+    // Make query tracking configurable via environment variable
+    this.enabled = process.env.ENABLE_QUERY_TRACKING === 'true' || 
+                   process.env.NODE_ENV === 'development';
   }
   
   track(query, params, duration) {

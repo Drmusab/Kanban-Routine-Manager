@@ -30,6 +30,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import ConfirmDialog from './ConfirmDialog';
 
 const TaskDialog = ({
   open,
@@ -57,6 +58,7 @@ const TaskDialog = ({
   });
   const [newSubtask, setNewSubtask] = useState('');
   const [showMarkdownPreview, setShowMarkdownPreview] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     if (task) {
@@ -172,12 +174,18 @@ const TaskDialog = ({
   };
 
   const handleDelete = () => {
-    if (task?.id && onDelete && window.confirm('Are you sure you want to delete this task?')) {
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = () => {
+    if (task?.id && onDelete) {
       onDelete(task.id);
+      setShowDeleteConfirm(false);
     }
   };
 
   return (
+    <>
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>
         {task?.id ? 'Edit Task' : 'Create New Task'}
@@ -479,6 +487,18 @@ const TaskDialog = ({
         </Button>
       </DialogActions>
     </Dialog>
+    
+    <ConfirmDialog
+      open={showDeleteConfirm}
+      title="Delete Task"
+      message={`Are you sure you want to delete "${formData.title}"? This action cannot be undone.`}
+      confirmText="Delete"
+      cancelText="Cancel"
+      dangerous={true}
+      onConfirm={confirmDelete}
+      onCancel={() => setShowDeleteConfirm(false)}
+    />
+    </>
   );
 };
 

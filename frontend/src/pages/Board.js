@@ -279,7 +279,8 @@ const Board = () => {
 
   const handleDeleteTask = async (taskId) => {
     try {
-      await deleteTask(taskId);
+      const deletedBy = 1; // TODO: Get current user ID from auth context
+      await deleteTask(taskId, deletedBy);
       showSuccess('تم حذف المهمة بنجاح');
       
       await refreshTasks();

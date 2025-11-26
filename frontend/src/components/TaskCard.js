@@ -21,10 +21,12 @@ import {
 import { format } from 'date-fns';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import ConfirmDialog from './ConfirmDialog';
 
 const TaskCard = ({ task, index, onEdit, onDelete, onDuplicate }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [showDescription, setShowDescription] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleMenuClick = (event) => {
     event.stopPropagation();
@@ -41,10 +43,15 @@ const TaskCard = ({ task, index, onEdit, onDelete, onDuplicate }) => {
   };
 
   const handleDelete = () => {
-    if (onDelete && window.confirm(`Are you sure you want to delete "${task.title}"?`)) {
+    handleMenuClose();
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = () => {
+    if (onDelete) {
       onDelete(task.id);
     }
-    handleMenuClose();
+    setShowDeleteConfirm(false);
   };
 
   const handleDuplicate = () => {
@@ -73,6 +80,7 @@ const TaskCard = ({ task, index, onEdit, onDelete, onDuplicate }) => {
   const totalSubtasks = task.subtasks ? task.subtasks.length : 0;
 
   return (
+    <>
     <Card
       sx={{
         cursor: 'pointer',
@@ -226,7 +234,18 @@ const TaskCard = ({ task, index, onEdit, onDelete, onDuplicate }) => {
         <Divider />
         {onDelete && <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>Delete</MenuItem>}
       </Menu>
-    </Card>
+      
+      <ConfirmDialog
+        open={showDeleteConfirm}
+        title="Delete Task"
+        message={`Are you sure you want to delete "${task.title}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        dangerous={true}
+        onConfirm={confirmDelete}
+        onCancel={() => setShowDeleteConfirm(false)}
+      />
+    </>
   );
 };
 

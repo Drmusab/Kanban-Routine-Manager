@@ -2,6 +2,8 @@
  * Centralized error handling middleware
  */
 
+const logger = require('../utils/logger');
+
 class AppError extends Error {
   constructor(message, statusCode = 500, details = null) {
     super(message);
@@ -12,6 +14,24 @@ class AppError extends Error {
   }
 }
 
+// Fields to exclude from logs for security
+const SENSITIVE_FIELDS = ['password', 'token', 'apiKey', 'api_key', 'secret', 'authorization'];
+
+const sanitizeBody = (body) => {
+  if (!body || typeof body !== 'object') {
+    return body;
+  }
+  
+  const sanitized = { ...body };
+  SENSITIVE_FIELDS.forEach(field => {
+    if (field in sanitized) {
+      sanitized[field] = '[REDACTED]';
+    }
+  });
+  
+  return sanitized;
+};
+
 const errorHandler = (err, req, res, next) => {
   // Set defaults
   let statusCode = err.statusCode || 500;
@@ -20,13 +40,13 @@ const errorHandler = (err, req, res, next) => {
 
   // Log error for debugging
   if (process.env.NODE_ENV !== 'test') {
-    console.error('Error:', {
+    logger.error('Request error occurred', {
       message: err.message,
       statusCode,
       stack: err.stack,
       url: req.url,
       method: req.method,
-      body: req.body
+      body: sanitizeBody(req.body)
     });
   }
 
