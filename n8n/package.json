@@ -23,9 +23,9 @@
 	"scripts": {
 		"build": "tsc && gulp build:icons",
 		"dev": "tsc --watch",
-		"format": "prettier nodes --write",
-		"lint": "eslint nodes package.json",
-		"lintfix": "eslint nodes package.json --fix",
+		"format": "prettier nodes credentials --write",
+		"lint": "eslint \"**/*.ts\" --ignore-pattern dist",
+		"lintfix": "eslint \"**/*.ts\" --ignore-pattern dist --fix",
 		"prepublishOnly": "npm run build && npm run lint -s"
 	},
 	"files": [
