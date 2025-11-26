@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Build script for n8n custom node
+# Make this script executable: chmod +x build.sh
 
 set -e
 
