@@ -902,7 +902,9 @@ router.get('/dashboard', async (req, res) => {
 
     res.json({
       date: today,
-      hijriDate: null, // Would require Hijri date calculation
+      // Hijri date conversion would require an external library or calculation
+      // Future enhancement: integrate with a Hijri calendar library like hijri-js or moment-hijri
+      hijriDate: null,
       prayers: prayerStatus,
       prayerCompletion,
       dhikr: dhikr.map(d => ({
@@ -999,7 +1001,10 @@ router.post('/settings', [
   } = req.body;
 
   try {
-    // Upsert settings (assuming single user for now)
+    // Upsert settings using id=1 for single-user mode
+    // Note: This application currently operates in single-user mode.
+    // For multi-user support, this should be updated to use user authentication
+    // and store settings per user_id instead of a fixed id.
     await runAsync(
       `INSERT OR REPLACE INTO islamic_settings 
        (id, calculation_method, latitude, longitude, timezone, notifications_enabled, reminder_minutes, updated_at)

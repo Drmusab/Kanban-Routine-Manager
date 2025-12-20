@@ -60,6 +60,9 @@ import {
 } from '../services/islamicService';
 import { useNotification } from '../contexts/NotificationContext';
 
+// Standard tasbih count target (SubhanAllah, Alhamdulillah, Allahu Akbar - each 33 times after prayer)
+const TASBIH_TARGET = 33;
+
 // Prayer icons and labels
 const PRAYER_CONFIG = {
   fajr: { label: 'الفجر', labelEn: 'Fajr', icon: <WbTwilight />, color: '#3498db' },
@@ -433,9 +436,9 @@ const Islamic = () => {
     const dhikrItems = [
       { type: 'morning_adhkar', label: 'أذكار الصباح', target: 1 },
       { type: 'evening_adhkar', label: 'أذكار المساء', target: 1 },
-      { type: 'subhanallah', label: 'سبحان الله', target: 33 },
-      { type: 'alhamdulillah', label: 'الحمد لله', target: 33 },
-      { type: 'allahuakbar', label: 'الله أكبر', target: 33 },
+      { type: 'subhanallah', label: 'سبحان الله', target: TASBIH_TARGET },
+      { type: 'alhamdulillah', label: 'الحمد لله', target: TASBIH_TARGET },
+      { type: 'allahuakbar', label: 'الله أكبر', target: TASBIH_TARGET },
     ];
 
     return (
