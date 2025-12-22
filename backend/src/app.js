@@ -28,6 +28,7 @@ const plannerRoutes = require('./routes/planner');
 const fitnessRoutes = require('./routes/fitness');
 const islamicRoutes = require('./routes/islamic');
 const omniplannerRoutes = require('./routes/omniplanner');
+const chronosRoutes = require('./routes/chronos');
 const { startScheduler } = require('./services/scheduler');
 const { requestTimer } = require('./middleware/performance');
 const logger = require('./utils/logger');
@@ -83,6 +84,7 @@ app.use('/api/planner', plannerRoutes);
 app.use('/api/fitness', fitnessRoutes);
 app.use('/api/islamic', islamicRoutes);
 app.use('/api/omniplanner', omniplannerRoutes);
+app.use('/api/chronos', chronosRoutes);
 
 const { errorHandler } = require('./middleware/errorHandler');
 
