@@ -788,6 +788,190 @@ const initDatabase = () => {
           UNIQUE(date, created_by)
         )`);
 
+        // Chronos Time Intelligence System tables
+        // Time blocks table - planned time blocks for activities
+        await runAsync(`CREATE TABLE IF NOT EXISTS chronos_time_blocks (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          title TEXT NOT NULL,
+          description TEXT,
+          date DATE NOT NULL,
+          start_time TEXT NOT NULL,
+          end_time TEXT NOT NULL,
+          color TEXT DEFAULT '#3498db',
+          category TEXT DEFAULT 'general',
+          task_id INTEGER,
+          project_id INTEGER,
+          habit_id INTEGER,
+          is_template BOOLEAN DEFAULT 0,
+          template_name TEXT,
+          recurrence_rule TEXT,
+          buffer_before INTEGER DEFAULT 0,
+          buffer_after INTEGER DEFAULT 0,
+          energy_required TEXT DEFAULT 'medium',
+          focus_level TEXT DEFAULT 'normal',
+          location TEXT,
+          notes TEXT,
+          created_by INTEGER,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (task_id) REFERENCES tasks (id) ON DELETE SET NULL,
+          FOREIGN KEY (project_id) REFERENCES projects (id) ON DELETE SET NULL,
+          FOREIGN KEY (habit_id) REFERENCES habits (id) ON DELETE SET NULL,
+          FOREIGN KEY (created_by) REFERENCES users (id)
+        )`);
+
+        // Time sessions table - actual time tracking records
+        await runAsync(`CREATE TABLE IF NOT EXISTS chronos_time_sessions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          time_block_id INTEGER,
+          task_id INTEGER,
+          project_id INTEGER,
+          title TEXT NOT NULL,
+          description TEXT,
+          category TEXT DEFAULT 'general',
+          start_time DATETIME NOT NULL,
+          end_time DATETIME,
+          pause_time DATETIME,
+          total_duration INTEGER DEFAULT 0,
+          pause_duration INTEGER DEFAULT 0,
+          status TEXT DEFAULT 'active',
+          session_type TEXT DEFAULT 'manual',
+          energy_level INTEGER DEFAULT 3,
+          focus_quality INTEGER DEFAULT 3,
+          productivity_rating INTEGER DEFAULT 3,
+          interruptions INTEGER DEFAULT 0,
+          notes TEXT,
+          tags TEXT,
+          is_billable BOOLEAN DEFAULT 0,
+          is_pomodoro BOOLEAN DEFAULT 0,
+          pomodoro_count INTEGER DEFAULT 0,
+          created_by INTEGER,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (time_block_id) REFERENCES chronos_time_blocks (id) ON DELETE SET NULL,
+          FOREIGN KEY (task_id) REFERENCES tasks (id) ON DELETE SET NULL,
+          FOREIGN KEY (project_id) REFERENCES projects (id) ON DELETE SET NULL,
+          FOREIGN KEY (created_by) REFERENCES users (id)
+        )`);
+
+        // Time templates table - recurring time block patterns
+        await runAsync(`CREATE TABLE IF NOT EXISTS chronos_time_templates (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          description TEXT,
+          title TEXT NOT NULL,
+          start_time TEXT NOT NULL,
+          duration INTEGER NOT NULL,
+          color TEXT DEFAULT '#3498db',
+          category TEXT DEFAULT 'general',
+          recurrence_pattern TEXT NOT NULL,
+          days_of_week TEXT,
+          is_active BOOLEAN DEFAULT 1,
+          buffer_before INTEGER DEFAULT 0,
+          buffer_after INTEGER DEFAULT 0,
+          energy_required TEXT DEFAULT 'medium',
+          focus_level TEXT DEFAULT 'normal',
+          created_by INTEGER,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (created_by) REFERENCES users (id)
+        )`);
+
+        // Time analytics table - computed metrics and insights
+        await runAsync(`CREATE TABLE IF NOT EXISTS chronos_analytics (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL,
+          date DATE NOT NULL,
+          metric_type TEXT NOT NULL,
+          metric_value REAL NOT NULL,
+          category TEXT,
+          metadata TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (user_id) REFERENCES users (id),
+          UNIQUE(user_id, date, metric_type, category)
+        )`);
+
+        // Pomodoro sessions table - dedicated Pomodoro tracking
+        await runAsync(`CREATE TABLE IF NOT EXISTS chronos_pomodoro_sessions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          time_session_id INTEGER,
+          task_id INTEGER,
+          duration INTEGER DEFAULT 25,
+          break_duration INTEGER DEFAULT 5,
+          status TEXT DEFAULT 'active',
+          start_time DATETIME NOT NULL,
+          end_time DATETIME,
+          completed BOOLEAN DEFAULT 0,
+          interrupted BOOLEAN DEFAULT 0,
+          notes TEXT,
+          created_by INTEGER,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (time_session_id) REFERENCES chronos_time_sessions (id) ON DELETE CASCADE,
+          FOREIGN KEY (task_id) REFERENCES tasks (id) ON DELETE SET NULL,
+          FOREIGN KEY (created_by) REFERENCES users (id)
+        )`);
+
+        // Focus sessions table - dedicated focus time tracking
+        await runAsync(`CREATE TABLE IF NOT EXISTS chronos_focus_sessions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          title TEXT NOT NULL,
+          goal TEXT,
+          start_time DATETIME NOT NULL,
+          end_time DATETIME,
+          planned_duration INTEGER NOT NULL,
+          actual_duration INTEGER,
+          focus_mode_enabled BOOLEAN DEFAULT 1,
+          distractions_blocked INTEGER DEFAULT 0,
+          quality_rating INTEGER DEFAULT 3,
+          achievements TEXT,
+          created_by INTEGER,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (created_by) REFERENCES users (id)
+        )`);
+
+        // Break records table - tracking breaks and well-being
+        await runAsync(`CREATE TABLE IF NOT EXISTS chronos_break_records (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          time_session_id INTEGER,
+          break_type TEXT DEFAULT 'short',
+          start_time DATETIME NOT NULL,
+          end_time DATETIME,
+          duration INTEGER,
+          activity TEXT,
+          hydration BOOLEAN DEFAULT 0,
+          movement BOOLEAN DEFAULT 0,
+          mindfulness BOOLEAN DEFAULT 0,
+          notes TEXT,
+          created_by INTEGER,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (time_session_id) REFERENCES chronos_time_sessions (id) ON DELETE CASCADE,
+          FOREIGN KEY (created_by) REFERENCES users (id)
+        )`);
+
+        // Chronos settings table - user preferences for time management
+        await runAsync(`CREATE TABLE IF NOT EXISTS chronos_settings (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER UNIQUE NOT NULL,
+          work_hours_start TEXT DEFAULT '09:00',
+          work_hours_end TEXT DEFAULT '17:00',
+          default_block_duration INTEGER DEFAULT 60,
+          default_break_duration INTEGER DEFAULT 15,
+          pomodoro_work_duration INTEGER DEFAULT 25,
+          pomodoro_break_duration INTEGER DEFAULT 5,
+          pomodoro_long_break INTEGER DEFAULT 15,
+          auto_schedule_enabled BOOLEAN DEFAULT 0,
+          conflict_warnings_enabled BOOLEAN DEFAULT 1,
+          buffer_time_enabled BOOLEAN DEFAULT 1,
+          default_buffer_minutes INTEGER DEFAULT 5,
+          focus_mode_default BOOLEAN DEFAULT 0,
+          break_reminders_enabled BOOLEAN DEFAULT 1,
+          idle_timeout_minutes INTEGER DEFAULT 5,
+          timezone TEXT DEFAULT 'UTC',
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+        )`);
+
         // Create indexes for better performance
         await runAsync('CREATE INDEX IF NOT EXISTS idx_tasks_column_id ON tasks(column_id)');
         await runAsync('CREATE INDEX IF NOT EXISTS idx_tasks_swimlane_id ON tasks(swimlane_id)');
@@ -824,6 +1008,15 @@ const initDatabase = () => {
         await runAsync('CREATE INDEX IF NOT EXISTS idx_tasks_urgency_importance ON tasks(urgency, importance)');
         await runAsync('CREATE INDEX IF NOT EXISTS idx_projects_status ON projects(status)');
         await runAsync('CREATE INDEX IF NOT EXISTS idx_contacts_type ON contacts(contact_type)');
+        // Chronos indexes
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_chronos_time_blocks_date ON chronos_time_blocks(date)');
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_chronos_time_blocks_category ON chronos_time_blocks(category)');
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_chronos_time_blocks_task ON chronos_time_blocks(task_id)');
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_chronos_time_sessions_start ON chronos_time_sessions(start_time)');
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_chronos_time_sessions_status ON chronos_time_sessions(status)');
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_chronos_time_sessions_task ON chronos_time_sessions(task_id)');
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_chronos_analytics_user_date ON chronos_analytics(user_id, date)');
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_chronos_analytics_metric ON chronos_analytics(metric_type)');
 
         // Ensure a default demo user exists for first-run experience
         const userCount = await getAsync('SELECT COUNT(*) as count FROM users');
