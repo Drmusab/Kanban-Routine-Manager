@@ -24,7 +24,8 @@ import {
   Today,
   FitnessCenter,
   Mosque,
-  ViewKanban
+  ViewKanban,
+  Timer
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -135,6 +136,14 @@ const Navbar = () => {
             </Button>
             <Button
               color="inherit"
+              startIcon={<Timer />}
+              onClick={() => navigate('/chronos')}
+              variant={location.pathname === '/chronos' ? 'outlined' : 'text'}
+            >
+              Chronos
+            </Button>
+            <Button
+              color="inherit"
               startIcon={<Analytics />}
               onClick={() => navigate('/analytics')}
               variant={location.pathname === '/analytics' ? 'outlined' : 'text'}
@@ -207,6 +216,9 @@ const Navbar = () => {
                 </MenuItem>
                 <MenuItem onClick={() => handleNavigation('/islamic')}>
                   <Mosque sx={{ mr: 1 }} /> الفلاح
+                </MenuItem>
+                <MenuItem onClick={() => handleNavigation('/chronos')}>
+                  <Timer sx={{ mr: 1 }} /> Chronos
                 </MenuItem>
                 <MenuItem onClick={() => handleNavigation('/analytics')}>
                   <Analytics sx={{ mr: 1 }} /> التحليلات
