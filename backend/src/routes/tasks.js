@@ -22,8 +22,7 @@ const createTaskValidations = [
   body('title')
     .trim()
     .notEmpty().withMessage('Title is required')
-    .isLength({ max: 500 }).withMessage('Title must be less than 500 characters')
-    .escape(),
+    .isLength({ max: 500 }).withMessage('Title must be less than 500 characters'),
   body('description')
     .optional()
     .isLength({ max: 10000 }).withMessage('Description must be less than 10000 characters'),
@@ -60,8 +59,7 @@ const updateTaskValidations = [
     .optional()
     .trim()
     .notEmpty().withMessage('Title cannot be empty')
-    .isLength({ max: 500 }).withMessage('Title must be less than 500 characters')
-    .escape(),
+    .isLength({ max: 500 }).withMessage('Title must be less than 500 characters'),
   body('description')
     .optional()
     .isLength({ max: 10000 }).withMessage('Description must be less than 10000 characters'),
