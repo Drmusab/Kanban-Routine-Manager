@@ -163,7 +163,7 @@ const Analytics = () => {
   }, [showError]);
 
   const filteredTasks = selectedBoard 
-    ? tasks.filter(task => task.board_id === selectedBoard)
+    ? tasks.filter(task => String(task.board_id) === String(selectedBoard))
     : tasks;
 
   // Task completion by column
