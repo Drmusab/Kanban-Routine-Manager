@@ -5,7 +5,7 @@
  */
 
 import React, { useRef, useCallback, useEffect, useState } from 'react';
-import { Box, Paper, useTheme as useMuiTheme, CircularProgress } from '@mui/material';
+import { Box, Paper, useTheme as useMuiTheme, CircularProgress, useMediaQuery } from '@mui/material';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -31,6 +31,7 @@ const TaskCalendar = ({ boardId, onEventClick, onDateClick }) => {
   const { mode } = useTheme();
   const { showError, showSuccess } = useNotification();
   const [loading, setLoading] = useState(false);
+  const isSmallScreen = useMediaQuery(muiTheme.breakpoints.down('md'));
 
   /**
    * Fetches calendar events from the API based on visible date range.
@@ -187,6 +188,16 @@ const TaskCalendar = ({ boardId, onEventClick, onDateClick }) => {
     };
   }, []);
 
+  /**
+   * Keep events in sync when the selected board changes.
+   */
+  useEffect(() => {
+    const calendarApi = calendarRef.current?.getApi();
+    if (calendarApi) {
+      calendarApi.refetchEvents();
+    }
+  }, [boardId]);
+
   // Calendar styling based on theme
   const calendarStyles = {
     // Calendar container
@@ -325,14 +336,17 @@ const TaskCalendar = ({ boardId, onEventClick, onDateClick }) => {
   };
 
   return (
-    <Paper 
-      elevation={2} 
-      sx={{ 
-        p: 3, 
+    <Paper
+      elevation={2}
+      sx={{
+        p: 3,
         borderRadius: 3,
         position: 'relative',
+        overflowX: 'auto',
         ...calendarStyles
       }}
+      aria-label="تقويم المهام"
+      aria-busy={loading}
     >
       {loading && (
         <Box
@@ -361,7 +375,7 @@ const TaskCalendar = ({ boardId, onEventClick, onDateClick }) => {
         headerToolbar={{
           left: 'prev,next today',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
+          right: isSmallScreen ? 'dayGridMonth,timeGridWeek,listWeek' : 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
         }}
         buttonText={{
           today: 'اليوم',
@@ -385,7 +399,7 @@ const TaskCalendar = ({ boardId, onEventClick, onDateClick }) => {
         eventResize={handleEventResize}
         height="auto"
         contentHeight="auto"
-        aspectRatio={1.8}
+        aspectRatio={isSmallScreen ? 1 : 1.8}
         eventTimeFormat={{
           hour: '2-digit',
           minute: '2-digit',
