@@ -21,6 +21,8 @@ export const getCalendarEvents = (params = {}) => {
   return api.get('/api/calendar/events', { params });
 };
 
-export default {
+const calendarService = {
   getCalendarEvents,
 };
+
+export default calendarService;

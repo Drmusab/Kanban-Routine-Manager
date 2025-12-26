@@ -31,7 +31,6 @@ const TaskCalendar = ({ boardId, onEventClick, onDateClick }) => {
   const { mode } = useTheme();
   const { showError, showSuccess } = useNotification();
   const [loading, setLoading] = useState(false);
-  const [events, setEvents] = useState([]);
 
   /**
    * Fetches calendar events from the API based on visible date range.
@@ -56,7 +55,6 @@ const TaskCalendar = ({ boardId, onEventClick, onDateClick }) => {
         const response = await getCalendarEvents(params);
         const fetchedEvents = response.data || [];
         
-        setEvents(fetchedEvents);
         successCallback(fetchedEvents);
       } catch (error) {
         console.error('Error fetching calendar events:', error);

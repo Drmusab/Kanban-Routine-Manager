@@ -16,7 +16,7 @@ import {
   MenuItem,
   Paper,
 } from '@mui/material';
-import { Add as AddIcon } from '@mui/material/icons-material';
+import { Add as AddIcon } from '@mui/icons-material';
 import TaskCalendar from '../components/Calendar/TaskCalendar';
 import TaskDialog from '../components/TaskDialog';
 import { useNotification } from '../contexts/NotificationContext';
