@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 /**
  * @fileoverview Routes for habit tracking functionality.
  * Provides CRUD operations for habits and habit logging.
@@ -30,7 +31,7 @@ const habitValidationSchema = [
  * GET /api/habits
  * Get all habits (excluding archived unless specified)
  */
-router.get('/', async (req, res) => {
+router.get(async (req: Request, res: Response) => {
   try {
     const includeArchived = req.query.includeArchived === 'true';
     const whereClause = includeArchived ? '' : 'WHERE archived = 0';
@@ -56,7 +57,7 @@ router.get('/', async (req, res) => {
       createdAt: habit.created_at,
       updatedAt: habit.updated_at,
     })));
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to fetch habits:', error);
     res.status(500).json({ error: 'Unable to fetch habits' });
   }
@@ -96,7 +97,7 @@ router.get('/:id', [param('id').isInt()], async (req, res) => {
       createdAt: habit.created_at,
       updatedAt: habit.updated_at,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to fetch habit:', error);
     res.status(500).json({ error: 'Unable to fetch habit' });
   }
@@ -152,7 +153,7 @@ router.post('/', habitValidationSchema, async (req, res) => {
       archived: false,
       message: 'Habit created successfully',
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to create habit:', error);
     res.status(500).json({ error: 'Unable to create habit', details: error.message });
   }
@@ -212,7 +213,7 @@ router.put('/:id', [param('id').isInt(), ...habitValidationSchema], async (req, 
     );
 
     res.json({ message: 'Habit updated successfully' });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to update habit:', error);
     res.status(500).json({ error: 'Unable to update habit' });
   }
@@ -238,7 +239,7 @@ router.delete('/:id', [param('id').isInt()], async (req, res) => {
     }
 
     res.json({ message: 'Habit deleted successfully' });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to delete habit:', error);
     res.status(500).json({ error: 'Unable to delete habit' });
   }
@@ -269,7 +270,7 @@ router.patch('/:id/archive', [param('id').isInt(), body('archived').isBoolean()]
     );
 
     res.json({ message: archived ? 'Habit archived' : 'Habit restored' });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to archive habit:', error);
     res.status(500).json({ error: 'Unable to archive habit' });
   }
@@ -308,7 +309,7 @@ router.post('/:id/log', [
     );
 
     res.json({ message: 'Habit logged successfully', habitId, date, status, value });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to log habit:', error);
     res.status(500).json({ error: 'Unable to log habit', details: error.message });
   }
@@ -351,7 +352,7 @@ router.get('/logs/range', [
       goalValue: log.goal_value,
       color: log.color,
     })));
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to fetch habit logs:', error);
     res.status(500).json({ error: 'Unable to fetch habit logs' });
   }
@@ -437,7 +438,7 @@ router.get('/:id/stats', [param('id').isInt()], async (req, res) => {
       monthlyTotal,
       monthlyPercentage,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to fetch habit stats:', error);
     res.status(500).json({ error: 'Unable to fetch habit statistics' });
   }
@@ -447,7 +448,7 @@ router.get('/:id/stats', [param('id').isInt()], async (req, res) => {
  * GET /api/habits/summary/weekly
  * Get a weekly summary of all habits for the current week
  */
-router.get('/summary/weekly', async (req, res) => {
+router.get(async (req: Request, res: Response) => {
   try {
     // Calculate week start and end (Monday to Sunday)
     const today = new Date();
@@ -563,7 +564,7 @@ router.get('/summary/weekly', async (req, res) => {
       dailyAverages,
       weekAverage,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to fetch weekly summary:', error);
     res.status(500).json({ error: 'Unable to fetch weekly summary' });
   }
@@ -704,7 +705,7 @@ router.get('/summary/monthly', [
       habits: habitStats,
       dailyRates,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to fetch monthly summary:', error);
     res.status(500).json({ error: 'Unable to fetch monthly summary' });
   }
@@ -731,10 +732,10 @@ router.put('/reorder', [body('habitIds').isArray()], async (req, res) => {
     }
 
     res.json({ message: 'Habits reordered successfully' });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to reorder habits:', error);
     res.status(500).json({ error: 'Unable to reorder habits' });
   }
 });
 
-export = router;
+export default router;

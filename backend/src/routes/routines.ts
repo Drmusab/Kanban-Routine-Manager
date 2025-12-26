@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 import express from 'express';
 import {  body, validationResult, param  } from 'express-validator';
 import {  runAsync, allAsync, getAsync  } from '../utils/database';
@@ -51,13 +52,13 @@ router.post('/', recurringRuleSchema, async (req, res) => {
       taskId: baseTaskId,
       recurringRule,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to create routine task:', error);
     res.status(500).json({ error: 'Unable to create routine task', details: error.message });
   }
 });
 
-router.get('/', async (req, res) => {
+router.get(async (req: Request, res: Response) => {
   try {
     const routines = await allAsync(
       `SELECT t.*, c.name as column_name
@@ -81,7 +82,7 @@ router.get('/', async (req, res) => {
     });
 
     res.json(parsed);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to fetch routines:', error);
     res.status(500).json({ error: 'Unable to fetch routines' });
   }
@@ -125,7 +126,7 @@ router.put('/:id', [param('id').isInt(), ...recurringRuleSchema], async (req, re
     );
 
     res.json({ message: 'Routine updated', recurringRule });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to update routine:', error);
     res.status(500).json({ error: 'Unable to update routine' });
   }
@@ -155,7 +156,7 @@ router.patch('/:id/status', [param('id').isInt(), body('status').isIn(['active',
     );
 
     res.json({ message: `Routine ${status === 'paused' ? 'paused' : 'resumed'}`, recurringRule });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to update routine status:', error);
     res.status(500).json({ error: 'Unable to update routine status' });
   }
@@ -177,7 +178,7 @@ router.delete('/:id', [param('id').isInt()], async (req, res) => {
     }
 
     res.json({ message: 'Routine deleted' });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to delete routine:', error);
     res.status(500).json({ error: 'Unable to delete routine' });
   }
@@ -192,9 +193,9 @@ const safeParseRule = (ruleString) => {
       interval: parsed.interval || 1,
       ...parsed,
     };
-  } catch (error) {
+  } catch (error: any) {
     return { frequency: 'daily', interval: 1, notificationLeadTime: 60, status: 'active' };
   }
 };
 
-export = router;
+export default router;

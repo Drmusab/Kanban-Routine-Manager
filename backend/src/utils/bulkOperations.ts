@@ -337,13 +337,11 @@ async function bulkDuplicateTasks(taskIds, userId = null) {
   }
 }
 
-export = {
-  bulkUpdateTasks,
-  bulkDeleteTasks,
-  bulkMoveTasks,
-  bulkAssignTasks,
-  bulkSetPriority,
-  bulkAddTags,
-  bulkRemoveTags,
-  bulkDuplicateTasks
-};
+export { bulkUpdateTasks };
+export { bulkDeleteTasks };
+export { bulkMoveTasks };
+export { bulkAssignTasks };
+export { bulkSetPriority };
+export { bulkAddTags };
+export { bulkRemoveTags };
+export { bulkDuplicateTasks };

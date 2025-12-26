@@ -113,8 +113,6 @@ const asyncHandler = (fn: RequestHandler): RequestHandler => {
   };
 };
 
-export = {
-  AppError,
-  errorHandler,
-  asyncHandler
-};
+export { AppError };
+export { errorHandler };
+export { asyncHandler };

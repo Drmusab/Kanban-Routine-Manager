@@ -196,8 +196,6 @@ class QueryPerformanceTracker {
  */
 const queryTracker = new QueryPerformanceTracker();
 
-export = {
-  requestTimer,
-  measureTime,
-  queryTracker
-};
+export { requestTimer };
+export { measureTime };
+export { queryTracker };

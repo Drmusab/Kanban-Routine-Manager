@@ -213,10 +213,8 @@ const resetEvents = () => {
   bufferedEvents.length = 0;
 };
 
-export = {
-  emitEvent,
-  subscribe,
-  getEventsSince,
-  toNumericBoolean,
-  resetEvents,
-};
+export { emitEvent };
+export { subscribe };
+export { getEventsSince };
+export { toNumericBoolean };
+export { resetEvents };

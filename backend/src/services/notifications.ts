@@ -196,12 +196,10 @@ const sendTaskDueNotification = async (task, minutesUntilDue) => {
   });
 };
 
-export = {
-  sendNotification,
-  sendTaskReminder,
-  sendRoutineReminder,
-  sendTaskDueNotification
-};
+export { sendNotification };
+export { sendTaskReminder };
+export { sendRoutineReminder };
+export { sendTaskDueNotification };
 
 /**
  * Safely parse a recurring rule JSON string.

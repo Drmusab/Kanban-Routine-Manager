@@ -120,4 +120,4 @@ const isValidUrl = (urlString) => {
   }
 };
 
-export = { triggerWebhook };
+export { triggerWebhook };

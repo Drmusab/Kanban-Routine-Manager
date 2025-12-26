@@ -243,4 +243,4 @@ const parseRecurringRule = (ruleString) => {
   }
 };
 
-export = { startScheduler };
+export { startScheduler };

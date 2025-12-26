@@ -256,4 +256,6 @@ const parseConfig = (configString, label) => {
   }
 };
 
-export = { triggerAutomation, checkTriggerConditions, executeAutomationAction };
+export { triggerAutomation };
+export { checkTriggerConditions };
+export { executeAutomationAction };

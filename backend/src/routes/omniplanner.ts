@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 /**
  * @fileoverview OmniPlanner routes for integrated GTD & Eisenhower-Kanban task management.
  * Provides endpoints for unified task views, GTD processing, Eisenhower matrix, and projects.
@@ -26,7 +27,7 @@ const calculateQuadrant = (urgency, importance) => {
  * Get OmniPlanner dashboard overview
  * Returns inbox count, today's tasks, weekly tasks, and project summaries
  */
-router.get('/dashboard', async (req, res) => {
+router.get(async (req: Request, res: Response) => {
   try {
     const today = new Date().toISOString().split('T')[0];
     const weekFromNow = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
@@ -111,7 +112,7 @@ router.get('/dashboard', async (req, res) => {
       })),
       waitingFor: { count: waitingFor.length, tasks: waitingFor }
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -119,7 +120,7 @@ router.get('/dashboard', async (req, res) => {
 /**
  * Get tasks by GTD status
  */
-router.get('/gtd/:status', async (req, res) => {
+router.get(async (req: Request, res: Response) => {
   try {
     const { status } = req.params;
     const validStatuses = ['inbox', 'next_actions', 'waiting_for', 'someday_maybe', 'reference', 'done'];
@@ -148,7 +149,7 @@ router.get('/gtd/:status', async (req, res) => {
     }));
 
     res.json(tasksWithTags);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -156,7 +157,7 @@ router.get('/gtd/:status', async (req, res) => {
 /**
  * Get tasks by Eisenhower quadrant
  */
-router.get('/eisenhower/:quadrant', async (req, res) => {
+router.get(async (req: Request, res: Response) => {
   try {
     const { quadrant } = req.params;
     
@@ -194,7 +195,7 @@ router.get('/eisenhower/:quadrant', async (req, res) => {
     }));
 
     res.json(tasksWithTags);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -202,7 +203,7 @@ router.get('/eisenhower/:quadrant', async (req, res) => {
 /**
  * Get Eisenhower matrix view (all quadrants)
  */
-router.get('/eisenhower', async (req, res) => {
+router.get(async (req: Request, res: Response) => {
   try {
     const tasks = await allAsync(
       `SELECT t.*, c.name as column_name, c.color as column_color, p.name as project_name
@@ -232,7 +233,7 @@ router.get('/eisenhower', async (req, res) => {
     }));
 
     res.json(matrix);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -317,7 +318,7 @@ router.put('/process/:id', [
 
     const task = await getAsync(`SELECT * FROM tasks WHERE id = ?`, [id]);
     res.json({ message: 'Task processed successfully', task });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -365,7 +366,7 @@ router.put('/execution/:id', [
 
     const task = await getAsync(`SELECT * FROM tasks WHERE id = ?`, [id]);
     res.json({ message: 'Task execution updated', task });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -373,7 +374,7 @@ router.put('/execution/:id', [
 /**
  * Get tasks by execution status (Kanban board view)
  */
-router.get('/kanban', async (req, res) => {
+router.get(async (req: Request, res: Response) => {
   try {
     const { projectId, category } = req.query;
     
@@ -422,7 +423,7 @@ router.get('/kanban', async (req, res) => {
     }));
 
     res.json(kanbanBoard);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -432,7 +433,7 @@ router.get('/kanban', async (req, res) => {
 /**
  * Get all projects
  */
-router.get('/projects', async (req, res) => {
+router.get(async (req: Request, res: Response) => {
   try {
     const { status } = req.query;
     let query = `SELECT p.*, 
@@ -453,7 +454,7 @@ router.get('/projects', async (req, res) => {
       ...p,
       progress: p.task_count > 0 ? Math.round((p.completed_count / p.task_count) * 100) : 0
     })));
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -461,7 +462,7 @@ router.get('/projects', async (req, res) => {
 /**
  * Get single project with tasks
  */
-router.get('/projects/:id', async (req, res) => {
+router.get(async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const project = await getAsync(`SELECT * FROM projects WHERE id = ?`, [id]);
@@ -489,7 +490,7 @@ router.get('/projects/:id', async (req, res) => {
       completed_count: completedCount,
       progress: taskCount > 0 ? Math.round((completedCount / taskCount) * 100) : 0
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -521,7 +522,7 @@ router.post('/projects', [
 
     const project = await getAsync(`SELECT * FROM projects WHERE id = ?`, [result.lastID]);
     res.status(201).json({ message: 'Project created successfully', project });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -529,7 +530,7 @@ router.post('/projects', [
 /**
  * Update a project
  */
-router.put('/projects/:id', async (req, res) => {
+router.put(async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { name, description, goal, status, color, start_date, target_date } = req.body;
@@ -554,7 +555,7 @@ router.put('/projects/:id', async (req, res) => {
 
     const project = await getAsync(`SELECT * FROM projects WHERE id = ?`, [id]);
     res.json({ message: 'Project updated successfully', project });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -562,7 +563,7 @@ router.put('/projects/:id', async (req, res) => {
 /**
  * Delete a project
  */
-router.delete('/projects/:id', async (req, res) => {
+router.delete(async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     
@@ -571,7 +572,7 @@ router.delete('/projects/:id', async (req, res) => {
     
     await runAsync(`DELETE FROM projects WHERE id = ?`, [id]);
     res.json({ message: 'Project deleted successfully' });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -581,7 +582,7 @@ router.delete('/projects/:id', async (req, res) => {
 /**
  * Get all contacts
  */
-router.get('/contacts', async (req, res) => {
+router.get(async (req: Request, res: Response) => {
   try {
     const { type } = req.query;
     let query = `SELECT * FROM contacts`;
@@ -596,7 +597,7 @@ router.get('/contacts', async (req, res) => {
 
     const contacts = await allAsync(query, params);
     res.json(contacts);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -628,7 +629,7 @@ router.post('/contacts', [
 
     const contact = await getAsync(`SELECT * FROM contacts WHERE id = ?`, [result.lastID]);
     res.status(201).json({ message: 'Contact created successfully', contact });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -636,7 +637,7 @@ router.post('/contacts', [
 /**
  * Update a contact
  */
-router.put('/contacts/:id', async (req, res) => {
+router.put(async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { name, email, phone, organization, role, contact_type, notes } = req.body;
@@ -661,7 +662,7 @@ router.put('/contacts/:id', async (req, res) => {
 
     const contact = await getAsync(`SELECT * FROM contacts WHERE id = ?`, [id]);
     res.json({ message: 'Contact updated successfully', contact });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -669,12 +670,12 @@ router.put('/contacts/:id', async (req, res) => {
 /**
  * Delete a contact
  */
-router.delete('/contacts/:id', async (req, res) => {
+router.delete(async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     await runAsync(`DELETE FROM contacts WHERE id = ?`, [id]);
     res.json({ message: 'Contact deleted successfully' });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -682,7 +683,7 @@ router.delete('/contacts/:id', async (req, res) => {
 /**
  * Get available contexts for GTD
  */
-router.get('/contexts', async (req, res) => {
+router.get(async (req: Request, res: Response) => {
   try {
     const contexts = await allAsync(
       `SELECT DISTINCT context FROM tasks WHERE context IS NOT NULL AND context != '' ORDER BY context`
@@ -704,7 +705,7 @@ router.get('/contexts', async (req, res) => {
     const allContexts = [...new Set([...defaultContexts, ...existingContexts])].sort();
     
     res.json(allContexts);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -712,7 +713,7 @@ router.get('/contexts', async (req, res) => {
 /**
  * Get tasks by context
  */
-router.get('/context/:context', async (req, res) => {
+router.get(async (req: Request, res: Response) => {
   try {
     const { context } = req.params;
     
@@ -727,7 +728,7 @@ router.get('/context/:context', async (req, res) => {
     );
 
     res.json(tasks);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -774,7 +775,7 @@ router.post('/capture', [
 
     const task = await getAsync(`SELECT * FROM tasks WHERE id = ?`, [result.lastID]);
     res.status(201).json({ message: 'Task captured to inbox', task });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -782,7 +783,7 @@ router.post('/capture', [
 /**
  * Get categories
  */
-router.get('/categories', async (req, res) => {
+router.get(async (req: Request, res: Response) => {
   try {
     const categories = await allAsync(
       `SELECT DISTINCT category FROM tasks WHERE category IS NOT NULL AND category != '' ORDER BY category`
@@ -803,9 +804,9 @@ router.get('/categories', async (req, res) => {
     const allCategories = [...new Set([...defaultCategories, ...existingCategories])].sort();
     
     res.json(allCategories);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
 
-export = router;
+export default router;

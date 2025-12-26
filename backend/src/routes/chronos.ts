@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 /**
  * @fileoverview Chronos Time Intelligence System API routes.
  * Provides endpoints for time blocking, time tracking, analytics, and AI-powered schedule optimization.
@@ -48,7 +49,7 @@ router.get('/time-blocks', authenticateToken, async (req, res) => {
 
     const blocks = await allAsync(query, params);
     res.json(blocks);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching time blocks:', error);
     res.status(500).json({ error: 'Failed to fetch time blocks' });
   }
@@ -73,7 +74,7 @@ router.get('/time-blocks/:id', authenticateToken, async (req, res) => {
     }
 
     res.json(block);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching time block:', error);
     res.status(500).json({ error: 'Failed to fetch time block' });
   }
@@ -159,7 +160,7 @@ router.post('/time-blocks', authenticateToken, async (req, res) => {
     );
 
     res.status(201).json(newBlock);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating time block:', error);
     res.status(500).json({ error: 'Failed to create time block' });
   }
@@ -223,7 +224,7 @@ router.put('/time-blocks/:id', authenticateToken, async (req, res) => {
     );
 
     res.json(updatedBlock);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating time block:', error);
     res.status(500).json({ error: 'Failed to update time block' });
   }
@@ -248,7 +249,7 @@ router.delete('/time-blocks/:id', authenticateToken, async (req, res) => {
     }
 
     res.json({ message: 'Time block deleted successfully' });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error deleting time block:', error);
     res.status(500).json({ error: 'Failed to delete time block' });
   }
@@ -297,7 +298,7 @@ router.get('/time-sessions', authenticateToken, async (req, res) => {
 
     const sessions = await allAsync(query, params);
     res.json(sessions);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching time sessions:', error);
     res.status(500).json({ error: 'Failed to fetch time sessions' });
   }
@@ -322,7 +323,7 @@ router.get('/time-sessions/active', authenticateToken, async (req, res) => {
     `, [userId]);
 
     res.json(session || null);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching active session:', error);
     res.status(500).json({ error: 'Failed to fetch active session' });
   }
@@ -384,7 +385,7 @@ router.post('/time-sessions/start', authenticateToken, async (req, res) => {
     );
 
     res.status(201).json(newSession);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error starting time session:', error);
     res.status(500).json({ error: 'Failed to start time session' });
   }
@@ -424,7 +425,7 @@ router.post('/time-sessions/:id/pause', authenticateToken, async (req, res) => {
     );
 
     res.json(updatedSession);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error pausing session:', error);
     res.status(500).json({ error: 'Failed to pause session' });
   }
@@ -473,7 +474,7 @@ router.post('/time-sessions/:id/resume', authenticateToken, async (req, res) => 
     );
 
     res.json(updatedSession);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error resuming session:', error);
     res.status(500).json({ error: 'Failed to resume session' });
   }
@@ -543,7 +544,7 @@ router.post('/time-sessions/:id/stop', authenticateToken, async (req, res) => {
     );
 
     res.json(updatedSession);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error stopping session:', error);
     res.status(500).json({ error: 'Failed to stop session' });
   }
@@ -636,7 +637,7 @@ router.get('/analytics/weekly', authenticateToken, async (req, res) => {
       energyPatterns,
       focusAnalysis
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching weekly analytics:', error);
     res.status(500).json({ error: 'Failed to fetch analytics' });
   }
@@ -686,7 +687,7 @@ router.get('/analytics/productivity-score', authenticateToken, async (req, res) 
         completedSessions: score.completed_sessions
       }
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error calculating productivity score:', error);
     res.status(500).json({ error: 'Failed to calculate productivity score' });
   }
@@ -708,7 +709,7 @@ router.get('/templates', authenticateToken, async (req, res) => {
     );
 
     res.json(templates);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching templates:', error);
     res.status(500).json({ error: 'Failed to fetch templates' });
   }
@@ -762,7 +763,7 @@ router.post('/templates', authenticateToken, async (req, res) => {
     );
 
     res.status(201).json(newTemplate);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating template:', error);
     res.status(500).json({ error: 'Failed to create template' });
   }
@@ -787,7 +788,7 @@ router.delete('/templates/:id', authenticateToken, async (req, res) => {
     }
 
     res.json({ message: 'Template deleted successfully' });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error deleting template:', error);
     res.status(500).json({ error: 'Failed to delete template' });
   }
@@ -821,7 +822,7 @@ router.get('/settings', authenticateToken, async (req, res) => {
     }
 
     res.json(settings);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching settings:', error);
     res.status(500).json({ error: 'Failed to fetch settings' });
   }
@@ -899,7 +900,7 @@ router.put('/settings', authenticateToken, async (req, res) => {
     );
 
     res.json(updatedSettings);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating settings:', error);
     res.status(500).json({ error: 'Failed to update settings' });
   }
@@ -937,7 +938,7 @@ router.post('/pomodoro/start', authenticateToken, async (req, res) => {
     );
 
     res.status(201).json(newPomodoro);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error starting Pomodoro:', error);
     res.status(500).json({ error: 'Failed to start Pomodoro session' });
   }
@@ -966,7 +967,7 @@ router.post('/pomodoro/:id/complete', authenticateToken, async (req, res) => {
     );
 
     res.json(updatedPomodoro);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error completing Pomodoro:', error);
     res.status(500).json({ error: 'Failed to complete Pomodoro session' });
   }
@@ -1018,7 +1019,7 @@ router.post('/integrate/task-to-block', authenticateToken, async (req, res) => {
 
     const newBlock = await getAsync('SELECT * FROM chronos_time_blocks WHERE id = ?', [result.lastID]);
     res.status(201).json(newBlock);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating block from task:', error);
     res.status(500).json({ error: 'Failed to create time block from task' });
   }
@@ -1054,14 +1055,14 @@ router.post('/integrate/auto-schedule-tasks', authenticateToken, async (req, res
             task_id: taskId,
             suggestion
           });
-        } catch (error) {
+        } catch (error: any) {
           console.error(`Could not schedule task ${taskId}:`, error.message);
         }
       }
     }
 
     res.json({ scheduledBlocks });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error auto-scheduling tasks:', error);
     res.status(500).json({ error: 'Failed to auto-schedule tasks' });
   }
@@ -1099,10 +1100,10 @@ router.get('/integrate/daily-blocks/:date', authenticateToken, async (req, res) 
         return sum + getMinutesDifference(block.start_time, block.end_time);
       }, 0)
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error syncing daily blocks:', error);
     res.status(500).json({ error: 'Failed to sync daily blocks' });
   }
 });
 
-export = router;
+export default router;

@@ -1275,4 +1275,9 @@ const clearDatabase = async () => {
   }
 };
 
-export = { db, initDatabase, runAsync, getAsync, allAsync, clearDatabase };
+export { db };
+export { initDatabase };
+export { runAsync };
+export { getAsync };
+export { allAsync };
+export { clearDatabase };

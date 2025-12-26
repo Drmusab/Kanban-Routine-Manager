@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 /**
  * @fileoverview Calendar API routes for FullCalendar integration.
  * Provides endpoints for fetching tasks in FullCalendar event format.
@@ -221,9 +222,9 @@ router.get('/events', calendarEventsValidations, async (req, res) => {
         res.status(500).json({ error: queryError.message });
       }
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
 
-export = router;
+export default router;

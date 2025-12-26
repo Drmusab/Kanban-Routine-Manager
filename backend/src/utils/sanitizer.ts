@@ -233,14 +233,12 @@ function removeNullBytes(input) {
   return input.replace(/\0/g, '');
 }
 
-export = {
-  sanitizeHTML,
-  sanitizeSQL,
-  sanitizeEmail,
-  sanitizeURL,
-  sanitizeFilename,
-  sanitizeMarkdown,
-  sanitizeJSON,
-  sanitizeNumber,
-  removeNullBytes
-};
+export { sanitizeHTML };
+export { sanitizeSQL };
+export { sanitizeEmail };
+export { sanitizeURL };
+export { sanitizeFilename };
+export { sanitizeMarkdown };
+export { sanitizeJSON };
+export { sanitizeNumber };
+export { removeNullBytes };

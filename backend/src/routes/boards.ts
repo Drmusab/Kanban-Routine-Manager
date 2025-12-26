@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 import express from 'express';
 const router = express.Router();
 import {  body, validationResult  } from 'express-validator';
@@ -517,4 +518,4 @@ router.post('/:id/duplicate', (req, res) => {
   });
 });
 
-export = router;
+export default router;

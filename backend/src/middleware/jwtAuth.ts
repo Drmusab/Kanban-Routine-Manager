@@ -80,7 +80,5 @@ const optionalAuth = (req, res, next) => {
   next();
 };
 
-export = {
-  authenticateToken,
-  optionalAuth
-};
+export { authenticateToken };
+export { optionalAuth };

@@ -291,9 +291,7 @@ async function countTasks(filters = {}) {
   return result[0]?.count || 0;
 }
 
-export = {
-  searchTasks,
-  countTasks,
-  buildWhereClause,
-  buildOrderByClause
-};
+export { searchTasks };
+export { countTasks };
+export { buildWhereClause };
+export { buildOrderByClause };

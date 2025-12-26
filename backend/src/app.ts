@@ -178,4 +178,4 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 
-export = app;
+export default app;

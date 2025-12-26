@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 import express from 'express';
 const router = express.Router();
 const { 
@@ -12,14 +13,14 @@ router.get('/weekly', async (_req, res) => {
   try {
     const report = await generateWeeklyReport();
     res.json(report);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to build weekly report:', error);
     res.status(500).json({ error: 'Unable to generate report', details: error.message });
   }
 });
 
 // Get custom date range report
-router.get('/custom', async (req, res) => {
+router.get(async (req: Request, res: Response) => {
   try {
     const { startDate, endDate } = req.query;
     
@@ -31,19 +32,19 @@ router.get('/custom', async (req, res) => {
 
     const report = await generateCustomReport(startDate, endDate);
     res.json(report);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to build custom report:', error);
     res.status(500).json({ error: 'Unable to generate report', details: error.message });
   }
 });
 
 // Get productivity analytics
-router.get('/analytics', async (req, res) => {
+router.get(async (req: Request, res: Response) => {
   try {
     const days = parseInt(req.query.days || '30', 10);
     const analytics = await generateProductivityAnalytics(days);
     res.json(analytics);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to generate analytics:', error);
     res.status(500).json({ error: 'Unable to generate analytics', details: error.message });
   }
@@ -55,14 +56,14 @@ router.post('/weekly/send-to-n8n', async (_req, res) => {
     const report = await generateWeeklyReport();
     const result = await sendReportToN8n(report);
     res.json(result);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to send report to n8n:', error);
     res.status(500).json({ error: 'Unable to send report', details: error.message });
   }
 });
 
 // Send custom report to n8n webhooks
-router.post('/custom/send-to-n8n', async (req, res) => {
+router.post(async (req: Request, res: Response) => {
   try {
     const { startDate, endDate } = req.body;
     
@@ -75,10 +76,10 @@ router.post('/custom/send-to-n8n', async (req, res) => {
     const report = await generateCustomReport(startDate, endDate);
     const result = await sendReportToN8n(report);
     res.json(result);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to send report to n8n:', error);
     res.status(500).json({ error: 'Unable to send report', details: error.message });
   }
 });
 
-export = router;
+export default router;

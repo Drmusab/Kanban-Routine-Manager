@@ -379,9 +379,7 @@ const generateProductivityAnalytics = async (days = 30) => {
   }
 };
 
-export = {
-  generateWeeklyReport,
-  generateCustomReport,
-  sendReportToN8n,
-  generateProductivityAnalytics
-};
+export { generateWeeklyReport };
+export { generateCustomReport };
+export { sendReportToN8n };
+export { generateProductivityAnalytics };

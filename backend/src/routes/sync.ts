@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 import express from 'express';
 const router = express.Router();
 
@@ -10,7 +11,7 @@ const writeEvent = (res, event) => {
   res.write(`data: ${JSON.stringify(event)}\n\n`);
 };
 
-router.get('/events', async (req, res) => {
+router.get(async (req: Request, res: Response) => {
   const { since, lastEventId, limit, events, board_id, priority } = req.query;
   let filteredEvents = getEventsSince({ since, lastEventId, limit });
   
@@ -123,4 +124,4 @@ router.get('/stream', (req, res) => {
   });
 });
 
-export = router;
+export default router;
