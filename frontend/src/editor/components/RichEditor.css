@@ -1,0 +1,423 @@
+/**
+ * Rich Block-Based Editor Styles
+ */
+
+/* ===== Editor Container ===== */
+
+.rich-editor-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.editor-wrapper {
+  min-height: 400px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+  background: #ffffff;
+}
+
+.editor-inner {
+  position: relative;
+  background: #fff;
+  border-radius: 4px;
+}
+
+/* ===== Content Editable ===== */
+
+.editor-content {
+  min-height: 300px;
+  resize: none;
+  font-size: 16px;
+  caret-color: #444;
+  position: relative;
+  outline: 0;
+  padding: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  line-height: 1.6;
+}
+
+.editor-content:focus {
+  outline: none;
+}
+
+/* ===== Placeholder ===== */
+
+.editor-placeholder {
+  color: #999;
+  overflow: hidden;
+  position: absolute;
+  text-overflow: ellipsis;
+  top: 16px;
+  left: 16px;
+  font-size: 16px;
+  user-select: none;
+  display: inline-block;
+  pointer-events: none;
+}
+
+/* ===== Text Styles ===== */
+
+.editor-text-bold {
+  font-weight: bold;
+}
+
+.editor-text-italic {
+  font-style: italic;
+}
+
+.editor-text-underline {
+  text-decoration: underline;
+}
+
+.editor-text-strikethrough {
+  text-decoration: line-through;
+}
+
+.editor-text-underlineStrikethrough {
+  text-decoration: underline line-through;
+}
+
+.editor-text-code {
+  background-color: #f4f4f4;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9em;
+  color: #e83e8c;
+}
+
+/* ===== Headings ===== */
+
+.editor-heading-h1 {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 24px 0 16px;
+  line-height: 1.2;
+  color: #1a1a1a;
+}
+
+.editor-heading-h2 {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 20px 0 12px;
+  line-height: 1.3;
+  color: #2a2a2a;
+}
+
+.editor-heading-h3 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 16px 0 8px;
+  line-height: 1.4;
+  color: #3a3a3a;
+}
+
+.editor-heading-h4 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 12px 0 8px;
+  line-height: 1.4;
+  color: #4a4a4a;
+}
+
+.editor-heading-h5 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 8px 0 4px;
+  line-height: 1.5;
+  color: #5a5a5a;
+}
+
+.editor-heading-h6 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 8px 0 4px;
+  line-height: 1.5;
+  color: #6a6a6a;
+}
+
+/* ===== Paragraph ===== */
+
+.editor-paragraph {
+  margin: 0 0 12px;
+  position: relative;
+}
+
+.editor-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+/* ===== Lists ===== */
+
+.editor-list-ol {
+  padding: 0;
+  margin: 0 0 12px 24px;
+  list-style-position: outside;
+}
+
+.editor-list-ul {
+  padding: 0;
+  margin: 0 0 12px 24px;
+  list-style-position: outside;
+}
+
+.editor-listitem {
+  margin: 4px 0;
+  padding-left: 8px;
+}
+
+.editor-nested-listitem {
+  list-style-type: none;
+}
+
+/* ===== Quote ===== */
+
+.editor-quote {
+  margin: 16px 0;
+  padding: 12px 16px;
+  border-left: 4px solid #3498db;
+  background-color: #f8f9fa;
+  font-style: italic;
+  color: #555;
+}
+
+/* ===== Code Block ===== */
+
+.editor-code {
+  background-color: #1e1e1e;
+  font-family: 'Courier New', Courier, monospace;
+  display: block;
+  padding: 16px;
+  line-height: 1.5;
+  font-size: 14px;
+  margin: 16px 0;
+  overflow-x: auto;
+  border-radius: 4px;
+  color: #d4d4d4;
+}
+
+/* Code highlighting */
+.editor-tokenComment {
+  color: #6a9955;
+}
+
+.editor-tokenPunctuation {
+  color: #d4d4d4;
+}
+
+.editor-tokenProperty {
+  color: #9cdcfe;
+}
+
+.editor-tokenSelector {
+  color: #ce9178;
+}
+
+.editor-tokenOperator {
+  color: #d4d4d4;
+}
+
+.editor-tokenAttr {
+  color: #c586c0;
+}
+
+.editor-tokenVariable {
+  color: #4fc1ff;
+}
+
+.editor-tokenFunction {
+  color: #dcdcaa;
+}
+
+/* ===== Links ===== */
+
+.editor-link {
+  color: #3498db;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-bottom-color 0.2s;
+}
+
+.editor-link:hover {
+  border-bottom-color: #3498db;
+}
+
+.editor-link:focus {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ===== Custom Block Nodes ===== */
+
+/* Kanban Card Node */
+.kanban-card-node {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 8px 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.kanban-card-node:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Todo Node */
+.todo-node {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  margin: 4px 0;
+}
+
+.todo-node input[type="checkbox"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
+
+/* Heading Block Node */
+.heading-block-node {
+  margin: 16px 0 8px;
+  position: relative;
+}
+
+/* ===== Block Drag Handle ===== */
+
+.block-drag-handle {
+  position: absolute;
+  left: -32px;
+  top: 0;
+  width: 24px;
+  height: 24px;
+  cursor: grab;
+  opacity: 0;
+  transition: opacity 0.2s;
+  color: #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.editor-paragraph:hover .block-drag-handle,
+.heading-block-node:hover .block-drag-handle {
+  opacity: 1;
+}
+
+.block-drag-handle:active {
+  cursor: grabbing;
+}
+
+/* ===== Selection ===== */
+
+.editor-content ::selection {
+  background-color: #b4d5fe;
+}
+
+/* ===== Focus State ===== */
+
+.editor-wrapper:focus-within {
+  box-shadow: 0 0 0 2px #3498db;
+}
+
+/* ===== Read-only Mode ===== */
+
+.editor-content[readonly] {
+  background-color: #f9f9f9;
+  cursor: not-allowed;
+}
+
+/* ===== Mobile Responsive ===== */
+
+@media (max-width: 768px) {
+  .editor-wrapper {
+    padding: 16px;
+  }
+  
+  .editor-content {
+    padding: 12px;
+    font-size: 14px;
+  }
+  
+  .editor-heading-h1 {
+    font-size: 28px;
+  }
+  
+  .editor-heading-h2 {
+    font-size: 24px;
+  }
+  
+  .editor-heading-h3 {
+    font-size: 20px;
+  }
+}
+
+/* ===== Dark Mode Support ===== */
+
+@media (prefers-color-scheme: dark) {
+  .editor-wrapper {
+    background: #1e1e1e;
+  }
+  
+  .editor-content {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    caret-color: #d4d4d4;
+  }
+  
+  .editor-placeholder {
+    color: #6a6a6a;
+  }
+  
+  .editor-text-code {
+    background-color: #2d2d2d;
+    color: #ce9178;
+  }
+  
+  .kanban-card-node {
+    background: #2d2d2d;
+    border-color: #444;
+  }
+  
+  .editor-quote {
+    background-color: #2d2d2d;
+    border-left-color: #3498db;
+    color: #b4b4b4;
+  }
+}
+
+/* ===== Accessibility ===== */
+
+.editor-content:focus-visible {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .editor-link {
+    text-decoration: underline;
+  }
+  
+  .kanban-card-node {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .kanban-card-node,
+  .editor-link,
+  .block-drag-handle {
+    transition: none;
+  }
+}
