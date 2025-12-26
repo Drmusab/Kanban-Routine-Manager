@@ -201,7 +201,7 @@ export class DatabaseService {
     // Remove property values from all rows
     const rows = this.getRows(databaseId);
     for (const row of rows) {
-      const values = JSON.parse(row.values) as Record<string, PropertyValue>;
+      const values = { ...row.values };
       delete values[propertyId];
       this.updateRow(row.id, { values });
     }
@@ -364,11 +364,11 @@ export class DatabaseService {
       throw new Error('View not found');
     }
     
-    const updatedView: DatabaseView = {
+    const updatedView = {
       ...view,
       ...updates,
       updatedAt: new Date().toISOString(),
-    };
+    } as DatabaseView;
     
     this.views.set(viewId, updatedView);
   }

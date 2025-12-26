@@ -11,6 +11,8 @@
  * 4. Changing a view never mutates data
  */
 
+import { DatabaseRowBlockData } from './blocks';
+
 // ===== Property Types =====
 
 /**
@@ -183,23 +185,7 @@ export type Property =
   | RollupProperty
   | FormulaProperty;
 
-// ===== Row Block Data =====
-
-/**
- * Database row block data
- * Each row is a block of type "db_row"
- */
-export interface DatabaseRowBlockData {
-  /** Database ID this row belongs to */
-  databaseId: string;
-  
-  /** Property values indexed by property ID */
-  values: Record<string, PropertyValue>;
-  
-  /** Row-level metadata */
-  archived?: boolean;
-  pinned?: boolean;
-}
+// ===== Property Value Types =====
 
 /**
  * Property value types
