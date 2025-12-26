@@ -147,44 +147,79 @@ router.get('/events', calendarEventsValidations, async (req, res) => {
         return res.status(500).json({ error: err.message });
       }
       
-      // Fetch tags and subtasks for each task
-      const tasksWithDetails = await Promise.all(
-        rows.map(task => {
-          return new Promise((resolve) => {
-            // Get tags for the task
-            db.all(
-              'SELECT tg.* FROM tags tg JOIN task_tags tt ON tg.id = tt.tag_id WHERE tt.task_id = ?',
-              [task.id],
-              (err, tagRows) => {
-                if (err) {
-                  task.tags = [];
-                } else {
-                  task.tags = tagRows;
-                }
-                
-                // Get subtasks for the task
-                db.all(
-                  'SELECT * FROM subtasks WHERE task_id = ? ORDER BY position ASC',
-                  [task.id],
-                  (err, subtaskRows) => {
-                    if (err) {
-                      task.subtasks = [];
-                    } else {
-                      task.subtasks = subtaskRows;
-                    }
-                    resolve(task);
-                  }
-                );
-              }
-            );
-          });
-        })
-      );
+      if (rows.length === 0) {
+        return res.json([]);
+      }
       
-      // Transform tasks to FullCalendar events
-      const events = tasksWithDetails.map(transformTaskToEvent);
+      // Get all task IDs
+      const taskIds = rows.map(task => task.id);
       
-      res.json(events);
+      // Fetch all tags for all tasks in a single query
+      const tagsQuery = `
+        SELECT tt.task_id, tg.* 
+        FROM tags tg 
+        JOIN task_tags tt ON tg.id = tt.tag_id 
+        WHERE tt.task_id IN (${taskIds.map(() => '?').join(',')})
+      `;
+      
+      // Fetch all subtasks for all tasks in a single query
+      const subtasksQuery = `
+        SELECT * FROM subtasks 
+        WHERE task_id IN (${taskIds.map(() => '?').join(',')})
+        ORDER BY task_id, position ASC
+      `;
+      
+      try {
+        // Execute both queries in parallel
+        const [tagsResults, subtasksResults] = await Promise.all([
+          new Promise((resolve, reject) => {
+            db.all(tagsQuery, taskIds, (err, tagRows) => {
+              if (err) reject(err);
+              else resolve(tagRows || []);
+            });
+          }),
+          new Promise((resolve, reject) => {
+            db.all(subtasksQuery, taskIds, (err, subtaskRows) => {
+              if (err) reject(err);
+              else resolve(subtaskRows || []);
+            });
+          })
+        ]);
+        
+        // Group tags and subtasks by task_id
+        const tagsByTask = {};
+        const subtasksByTask = {};
+        
+        tagsResults.forEach(tag => {
+          if (!tagsByTask[tag.task_id]) {
+            tagsByTask[tag.task_id] = [];
+          }
+          // Remove task_id from the tag object before adding
+          const { task_id, ...tagData } = tag;
+          tagsByTask[tag.task_id].push(tagData);
+        });
+        
+        subtasksResults.forEach(subtask => {
+          if (!subtasksByTask[subtask.task_id]) {
+            subtasksByTask[subtask.task_id] = [];
+          }
+          subtasksByTask[subtask.task_id].push(subtask);
+        });
+        
+        // Attach tags and subtasks to each task
+        const tasksWithDetails = rows.map(task => ({
+          ...task,
+          tags: tagsByTask[task.id] || [],
+          subtasks: subtasksByTask[task.id] || []
+        }));
+        
+        // Transform tasks to FullCalendar events
+        const events = tasksWithDetails.map(transformTaskToEvent);
+        
+        res.json(events);
+      } catch (queryError) {
+        res.status(500).json({ error: queryError.message });
+      }
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
