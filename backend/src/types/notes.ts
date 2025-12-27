@@ -380,6 +380,102 @@ export interface UnifiedSearchOptions {
   includeRelated?: boolean;
 }
 
+// ===== Graph Intelligence (Phase E) =====
+
+/**
+ * Note summary for graph queries
+ */
+export interface NoteSummary {
+  /** Note ID */
+  id: string;
+  
+  /** Note title */
+  title: string;
+  
+  /** Optional folder path */
+  folderPath?: string | null;
+}
+
+/**
+ * Graph node with depth information
+ */
+export interface GraphNode {
+  /** Note ID */
+  noteId: string;
+  
+  /** Note title */
+  title: string;
+  
+  /** Depth level from origin (0 = origin) */
+  depth: number;
+}
+
+/**
+ * Graph edge representing a link
+ */
+export interface GraphEdge {
+  /** Source note ID */
+  sourceNoteId: string;
+  
+  /** Target note ID */
+  targetNoteId: string;
+  
+  /** Link type */
+  linkType: NoteLinkType;
+}
+
+/**
+ * Unresolved link (missing note)
+ */
+export interface UnresolvedLink {
+  /** Source note ID that contains the unresolved link */
+  sourceNoteId: string;
+  
+  /** Missing note title */
+  missingTitle: string;
+  
+  /** Number of occurrences of this unresolved link */
+  count: number;
+}
+
+/**
+ * Result of neighbor traversal
+ */
+export interface NeighborsResult {
+  /** Graph nodes at each depth level */
+  nodes: GraphNode[];
+  
+  /** Edges between nodes */
+  edges: GraphEdge[];
+}
+
+// ===== Daily Notes (Phase F) =====
+
+/**
+ * Daily note template
+ */
+export interface DailyNoteTemplate {
+  /** Template content with variables */
+  content: string;
+  
+  /** Frontmatter template */
+  frontmatter?: NoteFrontmatter;
+}
+
+/**
+ * Template variables
+ */
+export interface TemplateVariables {
+  /** Current date in YYYY-MM-DD format */
+  date: string;
+  
+  /** Day of week (e.g., "Monday") */
+  weekday: string;
+  
+  /** Custom variables */
+  [key: string]: string;
+}
+
 // ===== Database Row Types =====
 
 /**

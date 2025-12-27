@@ -9,11 +9,14 @@ import express from 'express';
 import { body, param, query, validationResult } from 'express-validator';
 import { noteService } from '../services/noteService';
 import { unifiedSearchService } from '../services/unifiedSearchService';
+import { graphService } from '../services/graphService';
+import { dailyNotesService } from '../services/dailyNotesService';
 import { 
   CreateNoteParams, 
   UpdateNoteParams, 
   CreateTaskNoteRelationParams,
   TaskNoteRelationType,
+  DailyNoteTemplate,
 } from '../types/notes';
 
 const router = express.Router();
@@ -381,6 +384,197 @@ router.get('/utils/unresolved-links', async (req, res) => {
   } catch (error) {
     console.error('Error fetching unresolved links:', error);
     res.status(500).json({ error: 'Failed to fetch unresolved links' });
+  }
+});
+
+// ============= GRAPH INTELLIGENCE (Phase E) =============
+
+/**
+ * GET /api/obsidian-notes/:id/graph/outgoing
+ * Get outgoing links from a note (notes referenced by current note)
+ */
+router.get('/:id/graph/outgoing', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const outgoingLinks = await graphService.getOutgoingLinks(id);
+    res.json(outgoingLinks);
+  } catch (error) {
+    console.error('Error fetching outgoing links:', error);
+    res.status(500).json({ error: 'Failed to fetch outgoing links' });
+  }
+});
+
+/**
+ * GET /api/obsidian-notes/:id/graph/backlinks
+ * Get backlinks to a note (notes that link to current note)
+ */
+router.get('/:id/graph/backlinks', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const backlinks = await graphService.getBacklinks(id);
+    res.json(backlinks);
+  } catch (error) {
+    console.error('Error fetching graph backlinks:', error);
+    res.status(500).json({ error: 'Failed to fetch backlinks' });
+  }
+});
+
+/**
+ * GET /api/obsidian-notes/:id/graph/neighbors
+ * Get neighbors with depth-N traversal
+ * Query params:
+ *   - depth: maximum depth to traverse (default: 1)
+ */
+router.get('/:id/graph/neighbors', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const depth = req.query.depth ? parseInt(String(req.query.depth), 10) : 1;
+    
+    if (depth < 0 || depth > 10) {
+      return res.status(400).json({ error: 'Depth must be between 0 and 10' });
+    }
+    
+    const neighbors = await graphService.getNeighbors(id, depth);
+    res.json(neighbors);
+  } catch (error) {
+    console.error('Error fetching neighbors:', error);
+    res.status(500).json({ error: 'Failed to fetch neighbors' });
+  }
+});
+
+/**
+ * GET /api/obsidian-notes/graph/unresolved
+ * Get all unresolved links (missing notes)
+ */
+router.get('/graph/unresolved', async (req, res) => {
+  try {
+    const unresolvedLinks = await graphService.getUnresolvedLinks();
+    res.json(unresolvedLinks);
+  } catch (error) {
+    console.error('Error fetching unresolved links:', error);
+    res.status(500).json({ error: 'Failed to fetch unresolved links' });
+  }
+});
+
+/**
+ * GET /api/obsidian-notes/graph/orphans
+ * Get orphan notes (notes with no incoming or outgoing links)
+ */
+router.get('/graph/orphans', async (req, res) => {
+  try {
+    const orphans = await graphService.getOrphanNotes();
+    res.json(orphans);
+  } catch (error) {
+    console.error('Error fetching orphan notes:', error);
+    res.status(500).json({ error: 'Failed to fetch orphan notes' });
+  }
+});
+
+/**
+ * GET /api/obsidian-notes/graph/connected
+ * Get connected notes (notes with at least one link)
+ */
+router.get('/graph/connected', async (req, res) => {
+  try {
+    const connected = await graphService.getConnectedNotes();
+    res.json(connected);
+  } catch (error) {
+    console.error('Error fetching connected notes:', error);
+    res.status(500).json({ error: 'Failed to fetch connected notes' });
+  }
+});
+
+// ============= DAILY NOTES (Phase F) =============
+
+/**
+ * POST /api/obsidian-notes/daily
+ * Get or create today's daily note
+ */
+router.post('/daily', async (req, res) => {
+  try {
+    const noteId = await dailyNotesService.getOrCreateDailyNote();
+    const note = await noteService.getNote(noteId);
+    res.json(note);
+  } catch (error) {
+    console.error('Error creating/fetching daily note:', error);
+    res.status(500).json({ error: 'Failed to create/fetch daily note' });
+  }
+});
+
+/**
+ * GET /api/obsidian-notes/daily/:date
+ * Get or create daily note for a specific date
+ * Date format: YYYY-MM-DD
+ */
+router.get('/daily/:date', async (req, res) => {
+  try {
+    const { date } = req.params;
+    const noteId = await dailyNotesService.getOrCreateDailyNote(date);
+    const note = await noteService.getNote(noteId);
+    res.json(note);
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('Invalid date format')) {
+      return res.status(400).json({ error: error.message });
+    }
+    console.error('Error creating/fetching daily note:', error);
+    res.status(500).json({ error: 'Failed to create/fetch daily note' });
+  }
+});
+
+/**
+ * GET /api/obsidian-notes/templates/daily
+ * Get the current daily note template
+ */
+router.get('/templates/daily', async (req, res) => {
+  try {
+    const template = dailyNotesService.getTemplate();
+    res.json(template);
+  } catch (error) {
+    console.error('Error fetching daily template:', error);
+    res.status(500).json({ error: 'Failed to fetch daily template' });
+  }
+});
+
+/**
+ * PUT /api/obsidian-notes/templates/daily
+ * Update the daily note template
+ */
+router.put('/templates/daily', [
+  body('content').notEmpty().withMessage('Template content is required'),
+  body('frontmatter').optional().isObject(),
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  
+  try {
+    const { content, frontmatter } = req.body;
+    const template: DailyNoteTemplate = {
+      content,
+      frontmatter,
+    };
+    
+    dailyNotesService.setTemplate(template);
+    res.json({ message: 'Template updated successfully', template });
+  } catch (error) {
+    console.error('Error updating daily template:', error);
+    res.status(500).json({ error: 'Failed to update daily template' });
+  }
+});
+
+/**
+ * POST /api/obsidian-notes/templates/daily/reset
+ * Reset the daily note template to default
+ */
+router.post('/templates/daily/reset', async (req, res) => {
+  try {
+    dailyNotesService.resetTemplate();
+    const template = dailyNotesService.getTemplate();
+    res.json({ message: 'Template reset to default', template });
+  } catch (error) {
+    console.error('Error resetting daily template:', error);
+    res.status(500).json({ error: 'Failed to reset daily template' });
   }
 });
 
