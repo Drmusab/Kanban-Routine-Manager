@@ -154,7 +154,7 @@ export function replaceWikilinks(
   content: string,
   resolver: (target: string) => string
 ): string {
-  return content.replace(WIKILINK_REGEX, (match, target, alias) => {
+  return content.replace(WIKILINK_REGEX, (_match, target, alias) => {
     const resolvedUrl = resolver(target.trim());
     const linkText = alias?.trim() || target.trim();
     return `[${linkText}](${resolvedUrl})`;

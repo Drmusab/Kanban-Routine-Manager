@@ -11,7 +11,7 @@
     "lint": "eslint src --ext .ts,.tsx"
   },
   "dependencies": {
-    "@productivity-os/core": "workspace:*",
+    "@productivity-os/core": "*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "clsx": "^2.0.0",

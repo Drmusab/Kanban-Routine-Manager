@@ -11,8 +11,8 @@
     "lint": "eslint src --ext .ts"
   },
   "dependencies": {
-    "@productivity-os/core": "workspace:*",
-    "@productivity-os/db": "workspace:*",
+    "@productivity-os/core": "*",
+    "@productivity-os/db": "*",
     "zod": "^3.22.4",
     "date-fns": "^2.30.0"
   },

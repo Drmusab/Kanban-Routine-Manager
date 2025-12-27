@@ -68,7 +68,7 @@ export class IndexedDBAdapter {
    */
   async init(): Promise<void> {
     this.db = await openDB<ProductivityDBSchema>(this.dbName, this.version, {
-      upgrade(db, oldVersion, newVersion, transaction) {
+      upgrade(db, _oldVersion, _newVersion, _transaction) {
         // Notes store
         if (!db.objectStoreNames.contains('notes')) {
           const notesStore = db.createObjectStore('notes', { keyPath: 'id' });
@@ -281,7 +281,7 @@ export class IndexedDBAdapter {
 
   async clear(): Promise<void> {
     const db = this.ensureDB();
-    const stores: (keyof ProductivityDBSchema)[] = ['notes', 'blocks', 'tasks', 'syncQueue', 'metadata'];
+    const stores = ['notes', 'blocks', 'tasks', 'syncQueue', 'metadata'] as const;
     for (const store of stores) {
       await db.clear(store);
     }

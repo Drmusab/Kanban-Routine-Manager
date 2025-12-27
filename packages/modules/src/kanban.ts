@@ -142,7 +142,7 @@ export class KanbanModule {
     }
 
     // Remove from old column if exists
-    for (const [colId, tasks] of this.columnTasks.entries()) {
+    for (const [_colId, tasks] of this.columnTasks.entries()) {
       const index = tasks.findIndex((t) => t.id === task.id);
       if (index !== -1) {
         tasks.splice(index, 1);

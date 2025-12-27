@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import type { Command } from '@productivity-os/core';
-import { cn } from '../utils';
+import { cn } from './utils';
 
 /**
  * Command Palette Component (CMD+K)
@@ -147,7 +147,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                 </div>
 
                 {/* Commands */}
-                {categoryCommands.map((command, index) => {
+                {categoryCommands.map((command, _index) => {
                   const globalIndex = filteredCommands.indexOf(command);
                   const isSelected = globalIndex === selectedIndex;
 

@@ -264,7 +264,7 @@ export class SyncEngine {
         'Content-Type': 'application/octet-stream',
         'X-Client-Id': this.config.clientId,
       },
-      body: update,
+      body: update as unknown as BodyInit,
     });
 
     if (!response.ok) {
@@ -284,7 +284,7 @@ export class SyncEngine {
         'Content-Type': 'application/octet-stream',
         'X-Client-Id': this.config.clientId,
       },
-      body: stateVector,
+      body: stateVector as unknown as BodyInit,
     });
 
     if (!response.ok) {
