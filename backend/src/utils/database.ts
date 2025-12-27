@@ -1320,16 +1320,24 @@ const TABLES_IN_DELETE_ORDER = [
  * console.log('All database tables cleared');
  */
 const clearDatabase = async () => {
-  for (const table of TABLES_IN_DELETE_ORDER) {
-    try {
-      await runAsync(`DELETE FROM ${table}`);
-    } catch (error) {
-      if (error.message && error.message.includes('no such table')) {
-        // Skip tables that are not present in the current schema
-        continue;
+  // Temporarily disable foreign key enforcement to guarantee a clean wipe
+  // regardless of cascade relationships that may change during development.
+  await runAsync('PRAGMA foreign_keys = OFF');
+
+  try {
+    for (const table of TABLES_IN_DELETE_ORDER) {
+      try {
+        await runAsync(`DELETE FROM ${table}`);
+      } catch (error: any) {
+        if (error.message && error.message.includes('no such table')) {
+          // Skip tables that are not present in the current schema
+          continue;
+        }
+        throw error;
       }
-      throw error;
     }
+  } finally {
+    await runAsync('PRAGMA foreign_keys = ON');
   }
 };
 

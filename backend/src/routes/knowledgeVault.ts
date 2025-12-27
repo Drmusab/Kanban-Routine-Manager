@@ -5,7 +5,7 @@
  */
 
 import express, { Request, Response } from 'express';
-import { authenticateToken } from '../middleware/auth';
+import { authenticateToken } from '../middleware/jwtAuth';
 import { KnowledgeVaultService, VaultItemType, PARACategory } from '../services/knowledgeVault';
 
 const router = express.Router();
