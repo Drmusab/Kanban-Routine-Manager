@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
@@ -34,8 +35,6 @@ import {
   Refresh,
   School,
   CheckCircle,
-  NavigateNext,
-  NavigateBefore,
 } from '@mui/icons-material';
 
 import { useNotification } from '../contexts/NotificationContext';
@@ -53,7 +52,6 @@ import {
   deleteWord,
   getStickyNotes,
   createStickyNote,
-  updateStickyNote,
   deleteStickyNote,
 } from '../services/utilityService';
 

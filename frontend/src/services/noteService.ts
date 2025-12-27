@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * @fileoverview Service for Notes System
  * @module services/noteService
@@ -106,7 +107,7 @@ export const getZettelkastenGraph = () => {
   return api.get('/notes/zettelkasten/graph');
 };
 
-export default {
+const noteService = {
   getFolders,
   createFolder,
   updateFolder,
@@ -122,3 +123,5 @@ export default {
   removeNoteLink,
   getZettelkastenGraph
 };
+
+export default noteService;

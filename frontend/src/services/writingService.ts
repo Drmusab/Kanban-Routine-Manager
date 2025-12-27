@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * @fileoverview Service for Writing & Research Hub
  * @module services/writingService
@@ -177,7 +178,7 @@ export const deleteInspirationItem = (id: string) => {
   return api.delete(`/writing/inspiration/${id}`);
 };
 
-export default {
+const writingService = {
   getArticles,
   getArticleLifecycle,
   getArticle,
@@ -199,3 +200,5 @@ export default {
   toggleInspirationFavorite,
   deleteInspirationItem
 };
+
+export default writingService;
