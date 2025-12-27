@@ -27,7 +27,16 @@ const MARKDOWN_FIELDS = ['description', 'content', 'body', 'notes'];
  */
 const SKIP_FIELDS = ['id', 'token', 'api_key', 'password', 'password_hash', 'secret'];
 
-type SanitizableValue = string | number | boolean | null | undefined | SanitizableValue[] | Record<string, SanitizableValue>;
+/**
+ * Sanitizable value types
+ */
+interface SanitizableObject {
+  [key: string]: SanitizablePrimitive | SanitizableObject | SanitizableArray;
+}
+
+type SanitizableArray = Array<SanitizablePrimitive | SanitizableObject | SanitizableArray>;
+type SanitizablePrimitive = string | number | boolean | null | undefined;
+type SanitizableValue = SanitizablePrimitive | SanitizableObject | SanitizableArray;
 
 /**
  * Recursively sanitize an object
