@@ -105,7 +105,7 @@ services:
       dockerfile: infra/docker/Dockerfile.desktop.prod
       args:
         # Empty string for production - uses relative URLs proxied by nginx
-        REACT_APP_API_URL: ""
+        REACT_APP_API_URL: ''
     container_name: productivity-os-app
     profiles:
       - prod
