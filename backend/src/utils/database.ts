@@ -29,6 +29,9 @@ if (!isInMemoryDatabase) {
 // Initialize SQLite database connection
 const db = new sqlite3.Database(resolvedPath);
 
+// Enable foreign key support for SQLite (required for CASCADE DELETE)
+db.run('PRAGMA foreign_keys = ON');
+
 /**
  * Executes a SQL statement that modifies the database (INSERT, UPDATE, DELETE, CREATE, etc.).
  * Returns a promise that resolves with the result object containing lastID and changes.
@@ -790,6 +793,43 @@ const initDatabase = (): Promise<void> => {
           UNIQUE(date, created_by)
         )`);
 
+        // Obsidian-Style Notes System tables
+        // Notes table - Markdown-based knowledge nodes
+        await runAsync(`CREATE TABLE IF NOT EXISTS obsidian_notes (
+          id TEXT PRIMARY KEY,
+          title TEXT NOT NULL,
+          folder_path TEXT,
+          content_markdown TEXT NOT NULL DEFAULT '',
+          frontmatter TEXT,
+          created_by INTEGER,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (created_by) REFERENCES users (id)
+        )`);
+
+        // Note links table - Represents links parsed from note content
+        await runAsync(`CREATE TABLE IF NOT EXISTS obsidian_note_links (
+          id TEXT PRIMARY KEY,
+          source_note_id TEXT NOT NULL,
+          target_note_id TEXT,
+          unresolved_target TEXT,
+          link_type TEXT NOT NULL DEFAULT 'wikilink',
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (source_note_id) REFERENCES obsidian_notes (id) ON DELETE CASCADE,
+          FOREIGN KEY (target_note_id) REFERENCES obsidian_notes (id) ON DELETE SET NULL
+        )`);
+
+        // Task-Note relations table - Connects tasks with notes
+        await runAsync(`CREATE TABLE IF NOT EXISTS obsidian_task_note_relations (
+          id TEXT PRIMARY KEY,
+          task_id INTEGER NOT NULL,
+          note_id TEXT NOT NULL,
+          relation_type TEXT NOT NULL DEFAULT 'reference',
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (task_id) REFERENCES tasks (id) ON DELETE CASCADE,
+          FOREIGN KEY (note_id) REFERENCES obsidian_notes (id) ON DELETE CASCADE
+        )`);
+
         // Chronos Time Intelligence System tables
         // Time blocks table - planned time blocks for activities
         await runAsync(`CREATE TABLE IF NOT EXISTS chronos_time_blocks (
@@ -986,6 +1026,16 @@ const initDatabase = (): Promise<void> => {
         await runAsync('CREATE INDEX IF NOT EXISTS idx_daily_notes_date ON daily_notes(date)');
         await runAsync('CREATE INDEX IF NOT EXISTS idx_daily_reflections_date ON daily_reflections(date)');
         await runAsync('CREATE INDEX IF NOT EXISTS idx_time_blocks_date ON time_blocks(date)');
+        // Obsidian notes indexes
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_obsidian_notes_title ON obsidian_notes(title)');
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_obsidian_notes_folder_path ON obsidian_notes(folder_path)');
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_obsidian_notes_created_by ON obsidian_notes(created_by)');
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_obsidian_note_links_source ON obsidian_note_links(source_note_id)');
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_obsidian_note_links_target ON obsidian_note_links(target_note_id)');
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_obsidian_note_links_type ON obsidian_note_links(link_type)');
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_obsidian_task_note_relations_task ON obsidian_task_note_relations(task_id)');
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_obsidian_task_note_relations_note ON obsidian_task_note_relations(note_id)');
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_obsidian_task_note_relations_type ON obsidian_task_note_relations(relation_type)');
         // Fitness indexes
         await runAsync('CREATE INDEX IF NOT EXISTS idx_exercises_muscle_group ON exercises(primary_muscle_group_id)');
         await runAsync('CREATE INDEX IF NOT EXISTS idx_workout_sessions_date ON workout_sessions(date)');
@@ -1209,6 +1259,10 @@ const TABLES_IN_DELETE_ORDER = [
   'daily_priorities',
   'daily_notes',
   'daily_reflections',
+  // Obsidian notes tables (must come before tasks because of relations)
+  'obsidian_task_note_relations',
+  'obsidian_note_links',
+  'obsidian_notes',
   'tasks',
   'swimlanes',
   'columns',
