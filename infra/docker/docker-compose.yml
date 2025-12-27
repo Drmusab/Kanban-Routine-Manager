@@ -24,7 +24,8 @@ services:
       - "3001:3001"
     volumes:
       - ../../apps/backend/src:/app/src:ro
-      - vault_data:/app/data
+      - db_data:/app/data
+      - vault_data:/app/vaults
       - app_config:/app/config
       - attachments:/app/attachments
       - backups:/app/backups
@@ -34,6 +35,7 @@ services:
       PORT: 3001
       FRONTEND_URL: http://localhost:3000
       DATABASE_PATH: /app/data/productivity.db
+      VAULT_PATH: /app/vaults
       N8N_API_KEY: ${N8N_API_KEY:-}
     restart: unless-stopped
     healthcheck:
@@ -76,7 +78,8 @@ services:
     ports:
       - "3001:3001"
     volumes:
-      - vault_data:/app/data
+      - db_data:/app/data
+      - vault_data:/app/vaults
       - app_config:/app/config
       - attachments:/app/attachments
       - backups:/app/backups
@@ -86,6 +89,7 @@ services:
       PORT: 3001
       FRONTEND_URL: http://localhost:3000
       DATABASE_PATH: /app/data/productivity.db
+      VAULT_PATH: /app/vaults
       N8N_API_KEY: ${N8N_API_KEY:-}
     restart: unless-stopped
     healthcheck:
@@ -129,12 +133,14 @@ services:
       - worker
     volumes:
       - ../../apps/backend/src:/app/src:ro
-      - vault_data:/app/data
+      - db_data:/app/data
+      - vault_data:/app/vaults
     environment:
       <<: *common-env
       NODE_ENV: development
       WORKER_MODE: "true"
       DATABASE_PATH: /app/data/productivity.db
+      VAULT_PATH: /app/vaults
     command: ["npm", "run", "worker"]
     depends_on:
       api-dev:
@@ -150,12 +156,14 @@ services:
       - prod
       - worker
     volumes:
-      - vault_data:/app/data
+      - db_data:/app/data
+      - vault_data:/app/vaults
     environment:
       <<: *common-env
       NODE_ENV: production
       WORKER_MODE: "true"
       DATABASE_PATH: /app/data/productivity.db
+      VAULT_PATH: /app/vaults
     command: ["node", "dist/worker.js"]
     depends_on:
       api-prod:
@@ -167,6 +175,11 @@ volumes:
   # Primary vault storage for notes, markdown files, and indexes
   vault_data:
     name: productivity-os-vault
+    driver: local
+
+  # Database storage (SQLite file)
+  db_data:
+    name: productivity-os-db
     driver: local
 
   # Application configuration (settings, templates, etc.)

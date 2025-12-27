@@ -51,6 +51,7 @@ import { CollaborationServer } from './services/collaborationServer';
 import { csrfProtection } from './middleware/csrf';
 import { sanitizeRequest } from './middleware/sanitization';
 import { rateLimiters } from './middleware/rateLimiter';
+import { runStartupMigrations } from './services/versioning';
 
 /** Express application instance */
 const app: Application = express();
@@ -238,7 +239,8 @@ app.use(errorHandler);
 
 // Initialize database and start server (skip in test environment)
 if (process.env.NODE_ENV !== 'test') {
-  initDatabase().then(() => {
+  initDatabase().then(async () => {
+    await runStartupMigrations();
     // Initialize block system
     initializeBlockSystem();
     
