@@ -16,8 +16,8 @@ An Obsidian-style productivity platform combining note-taking, task management, 
 
 ```bash
 # Clone the repository
-git clone https://github.com/Drmusab/AI-Integrated-Task-Manager.git
-cd AI-Integrated-Task-Manager
+git clone https://github.com/Drmusab/Productivity .git
+cd Productivity
 
 # Copy environment file
 cp .env.example .env
