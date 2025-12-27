@@ -137,9 +137,10 @@ npm run restore backups/backup-20250101-120000.tar.gz
 
 ### Automatic Migrations
 
-Migrations run automatically when the application starts if:
+Migrations and version stamping run automatically when the application starts if:
 1. The schema version in the database is lower than `SCHEMA_VERSION`
 2. There are pending migration files
+3. The running container's `APP_VERSION` differs from the last recorded value (tracked in `app_versions` table)
 
 ### Manual Migration Commands
 
