@@ -2,7 +2,7 @@ import cron from 'node-cron';
 import {  db  } from '../utils/database';
 import {  triggerAutomation  } from './automation';
 import {  sendTaskDueNotification, sendRoutineReminder  } from './notifications';
-import {  createRecurringTask  } from './tasks';
+import {  createRecurringTask, OriginalTask  } from './tasks';
 import {  generateWeeklyReport, sendReportToN8n  } from './reporting';
 import { parseRecurringRule } from '../utils/recurringRule';
 
@@ -11,19 +11,9 @@ const MILLISECONDS_PER_MINUTE = 60 * 1000;
 const MILLISECONDS_PER_HOUR = 60 * MILLISECONDS_PER_MINUTE;
 
 /**
- * Task row from database
+ * Task row from database - matches OriginalTask interface
  */
-interface TaskDbRow {
-  id: number;
-  title: string;
-  description?: string | null;
-  column_id: number;
-  priority?: string | null;
-  due_date: string;
-  recurring_rule?: string | null;
-  created_by?: number | null;
-  assigned_to?: number | null;
-}
+type TaskDbRow = OriginalTask;
 
 // Start the scheduler
 const startScheduler = () => {

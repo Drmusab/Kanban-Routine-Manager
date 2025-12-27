@@ -27,16 +27,16 @@ const isPositiveInteger = (value: unknown): value is number =>
 /**
  * Original task interface for recurring task creation
  */
-interface OriginalTask {
+export interface OriginalTask {
   id?: number;
   title: string;
-  description?: string;
+  description?: string | null;
   column_id: number;
-  priority?: string;
+  priority?: string | null;
   due_date: string;
-  recurring_rule?: string;
-  created_by?: number;
-  assigned_to?: number;
+  recurring_rule?: string | null;
+  created_by?: number | null;
+  assigned_to?: number | null;
 }
 
 /**
