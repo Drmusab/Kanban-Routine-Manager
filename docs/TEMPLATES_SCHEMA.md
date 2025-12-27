@@ -1204,7 +1204,8 @@ class TemplateEngine {
       return baseDate.toISOString().split('T')[0];
     }
     
-    return match;
+    // Return the original expression wrapped in braces if no match
+    return `{{${expression}}}`;
   }
 }
 ```
