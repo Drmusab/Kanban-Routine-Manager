@@ -82,8 +82,8 @@ router.get('/tasks', async (req, res) => {
       label: task.label,
       createdAt: task.createdAt,
       updatedAt: task.updatedAt,
-      urgency: task.urgency,
-      importance: task.importance,
+      urgency: Boolean(task.urgency),
+      importance: Boolean(task.importance),
       quadrant: calculateQuadrant(task.urgency, task.importance),
     }));
 
@@ -170,8 +170,8 @@ router.post(
         status: status || 'todo',
         priority: priority || 'not-important',
         label,
-        urgency: eisenhower.urgency,
-        importance: eisenhower.importance,
+        urgency: Boolean(eisenhower.urgency),
+        importance: Boolean(eisenhower.importance),
         quadrant: calculateQuadrant(eisenhower.urgency, eisenhower.importance),
       };
 
@@ -283,8 +283,8 @@ router.put(
         label: updatedTask.label,
         createdAt: updatedTask.createdAt,
         updatedAt: updatedTask.updatedAt,
-        urgency: updatedTask.urgency,
-        importance: updatedTask.importance,
+        urgency: Boolean(updatedTask.urgency),
+        importance: Boolean(updatedTask.importance),
         quadrant: calculateQuadrant(updatedTask.urgency, updatedTask.importance),
       };
 
@@ -358,8 +358,8 @@ router.get('/eisenhower', async (req, res) => {
         label: task.label,
         createdAt: task.createdAt,
         updatedAt: task.updatedAt,
-        urgency: task.urgency,
-        importance: task.importance,
+        urgency: Boolean(task.urgency),
+        importance: Boolean(task.importance),
         quadrant,
       });
     });
