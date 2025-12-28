@@ -60,18 +60,23 @@ const MainEditor: React.FC<MainEditorProps> = ({
           children
         ) : activeTab ? (
           <div className="obsidian-editor-content">
-            {/* Render markdown content */}
+            {/* Basic markdown rendering for demo purposes
+                For production use, consider using a proper markdown library like:
+                - react-markdown (already in dependencies)
+                - remark/unified for advanced parsing
+                This simple parser handles H1-H3 headings only */}
             {activeTab.content.split('\n').map((line, index) => {
+              const key = `${activeTab.id}-line-${index}`;
               if (line.startsWith('# ')) {
-                return <h1 key={index}>{line.substring(2)}</h1>;
+                return <h1 key={key}>{line.substring(2)}</h1>;
               } else if (line.startsWith('## ')) {
-                return <h2 key={index}>{line.substring(3)}</h2>;
+                return <h2 key={key}>{line.substring(3)}</h2>;
               } else if (line.startsWith('### ')) {
-                return <h3 key={index}>{line.substring(4)}</h3>;
+                return <h3 key={key}>{line.substring(4)}</h3>;
               } else if (line.trim() === '') {
-                return <br key={index} />;
+                return <br key={key} />;
               } else {
-                return <p key={index}>{line}</p>;
+                return <p key={key}>{line}</p>;
               }
             })}
           </div>
